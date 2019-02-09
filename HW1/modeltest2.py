@@ -1,12 +1,12 @@
 import numpy as np
-from classifier import classifier
+from classifier2 import classifier2
 from keras.datasets import mnist
 
 
 def model(number,batch_size, epochs, learning_rate, train_images, train_labels_original, test_images, test_labels_original):
         data_size = train_images.shape[0]
         dimension = train_images.shape[1]
-        number_classifier = classifier(number, batch_size, dimension, learning_rate)
+        number_classifier = classifier2(number, batch_size, dimension, learning_rate)
         Label_train_binary = [1 if a == number_classifier.number else 0 for a in train_labels_original]
         Label_test_binary = [1 if a == number_classifier.number else 0 for a in test_labels_original]
         Label_train_binary = np.asarray(Label_train_binary)
