@@ -2,13 +2,19 @@ import numpy as np
 
 class classifier:
     
-    def __init__(self, number, batch_size, dimension, learning_rate):
+    def __init__(self, number, batch_size, dimension, learning_rate,train_labels_original,test_labels_original):
         self.number=number
         self.weight = np.zeros((dimension, 1))
         self.bias = 0
         self.dimension = dimension
         self.learning_rate = learning_rate
         self.batch_size = batch_size
+        self.Label_train_binary = [1 if a == number else 0 for a in train_labels_original]
+        self.Label_test_binary = [1 if a == number else 0 for a in test_labels_original]
+        self.Label_train_binary = np.asarray(self.Label_train_binary)
+        self.Label_test_binary = np.asarray(self.Label_test_binary)
+        self.train_labels_shuffled = np.zeros((1,train_labels_original.shape[0]))
+        # self.Y_prediction = np.zeros((1,train_labels_original.shape[0]))
     
     def sigmoid(self, z):
         s = 1.0/(1.0 + np.exp(-z))
@@ -37,15 +43,20 @@ class classifier:
 
         A = self.sigmoid(np.dot(self.weight.T, X) + self.bias)
         
-        for i in range(A.shape[1]):
-            if (A[:,i] > 0.5): 
-                Y_prediction[:, i] = 1
-            elif (A[:,i] <= 0.5):
-                Y_prediction[:, i] = 0
+        # for i in range(A.shape[1]):
+        #     if (A[:,i] > 0.5): 
+        #         Y_prediction[:, i] = 1
+        #     elif (A[:,i] <= 0.5):
+        #         Y_prediction[:, i] = 0
+        
+        return A
 
-        return Y_prediction
+    def Label_shuffle(self, shuffled_indices):
+        self.train_labels_shuffled = self.Label_train_binary[shuffled_indices]
 
-
+    def train(self, i, xi):
+        yi = self.train_labels_shuffled[i : i + self.batch_size]
+        self.update(xi,yi)
 
 
 
