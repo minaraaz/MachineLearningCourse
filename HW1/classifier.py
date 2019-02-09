@@ -4,7 +4,7 @@ class classifier:
     
     def __init__(self, number, batch_size, dimension, learning_rate):
         self.number=number
-        self.weight = np.zeros((1, dimension))
+        self.weight = np.zeros((dimension, 1))
         self.bias = 0
         self.dimension = dimension
         self.learning_rate = learning_rate
@@ -15,20 +15,16 @@ class classifier:
         return s
     
     def backward(self, X, Y):
-        print self.weight.shape
-        print np.dot(self.weight.T,X).shape
         z = np.dot(self.weight.T,X) + self.bias
         A = self.sigmoid(z)
 
-        print z.shape
-        print A.shape
-        print Y.shape
         gradient_weight = 1.0/self.batch_size * np.dot(X, (A-Y).T)
         gradient_bias = 1.0/self.batch_size * np.sum(A-Y)
 
         return gradient_weight, gradient_bias
     
     def update(self, X, Y):
+        X = X.transpose()
         gradient_weight, gradient_bias = self.backward(X, Y)
 
         self.weight = self.weight - self.learning_rate * gradient_weight
@@ -37,6 +33,7 @@ class classifier:
 
     def predict (self, X):
         Y_prediction = np.zeros((1,X.shape[0]))
+        X = X.transpose()
 
         A = self.sigmoid(np.dot(self.weight.T, X) + self.bias)
         
@@ -47,7 +44,6 @@ class classifier:
                 Y_prediction[:, i] = 0
 
         return Y_prediction
-
 
 
 
