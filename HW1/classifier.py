@@ -43,12 +43,6 @@ class classifier:
 
         A = self.sigmoid(np.dot(self.weight.T, X) + self.bias)
         
-        # for i in range(A.shape[1]):
-        #     if (A[:,i] > 0.5): 
-        #         Y_prediction[:, i] = 1
-        #     elif (A[:,i] <= 0.5):
-        #         Y_prediction[:, i] = 0
-        
         return A
 
     def Label_shuffle(self, shuffled_indices):
