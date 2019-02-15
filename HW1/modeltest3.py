@@ -16,9 +16,9 @@ train_labels = (np.arange(np.max(train_labels_original) + 1) == train_labels_ori
 test_labels = (np.arange(np.max(test_labels_original) + 1) == test_labels_original[:, None]).astype(float)
 
 # initial variables
-batch_size = 512
+batch_size = 600
 epochs = 100
-learning_rate = 1
+learning_rate = 0.1
 m = 10
 data_size = train_images.shape[0]
 dimension = train_images.shape[1]
@@ -44,12 +44,8 @@ for epoch in range(epochs):
                 yi = train_labels_shuffled[i : i + batch_size]
                 digit_classifier.update(xi,yi)
         
-        
-        Y_train_dic.append(digit_classifier.predict(train_images))
-        Y_test_dic.append(digit_classifier.predict(test_images))
-
-        predicted_labels_train = np.squeeze(np.argmax(Y_train_dic, axis = 0))
-        predicted_labels_test = np.squeeze(np.argmax(Y_test_dic, axis = 0))
+        predicted_labels_train = np.squeeze(np.argmax(digit_classifier.predict(train_images), axis = 0))
+        predicted_labels_test = np.squeeze(np.argmax(digit_classifier.predict(test_images), axis = 0))
 
         train_accuracy = np.mean([int(i==j) for i, j in zip(predicted_labels_train, train_labels_original)]) * 100.0
         models_train_accuracy.append(train_accuracy)

@@ -8,21 +8,22 @@ class softmax_classifier:
         self.dimension = dimension
         self.learning_rate = learning_rate
         self.batch_size = batch_size
-        self.m = m
+        self.num_class = m
     
     def softmax(self, z):
-        s = np.exp(z)/np.sum(np.exp(z))
+        z = z - np.max(z, axis=0)
+        s = np.exp(z)/np.sum(np.exp(z), axis=0)
         return s
-    
-    def backward(self, X, Y):
-        # nabla_b = [np.zeros(b.shape) for b in self.bias]
-        # nabla_w = [np.zeros(w.shape) for w in self.weight]
 
+    def backward(self, X, Y):
         z = np.dot(self.weight.T,X) + self.bias
         A = self.softmax(z)
+        A = np.repeat(A[np.newaxis], self.num_class, axis = 0) - np.repeat(np.identity(self.num_class)[:,:, np.newaxis], self.batch_size, axis=2)
+        YA = np.repeat(Y.T[:, np.newaxis], self.num_class, axis = 1) * A
+        YA = np.sum(YA, axis=0)
 
-        gradient_weight = 1.0/self.batch_size * np.dot(X, ((A-Y)*A*(1-A)).T)
-        gradient_bias = 1.0/self.batch_size * np.sum(((A-Y)*A*(1-A)))
+        gradient_weight = 1.0/self.batch_size * np.dot(X, YA.T)
+        gradient_bias = 1.0/self.batch_size * np.sum(YA, axis=1,keepdims=True)
 
         return gradient_weight, gradient_bias
     
@@ -35,20 +36,8 @@ class softmax_classifier:
 
 
     def predict (self, X):
-        Y_prediction = np.zeros((1,X.shape[0]))
         X = X.transpose()
-
         A = self.softmax(np.dot(self.weight.T, X) + self.bias)
         
         return A
 
-
-
-def OneHotEncode(y):
-    Onehot_encoded = []
-    for i, val in enumerate(y):
-        temp = [0] * 10
-        temp[val] = 1
-        Onehot_encoded.append(temp)
-    
-    return Onehot_encoded

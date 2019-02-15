@@ -4,6 +4,9 @@ from keras.datasets import mnist
 from keras import models
 from keras import layers
 from keras.utils import to_categorical
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 
 batch_size = 128
 num_classes = 10
